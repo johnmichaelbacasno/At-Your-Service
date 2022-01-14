@@ -1,0 +1,169 @@
+{% extends "main.html" %}
+
+{% block title %}AYS! Account{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+<link rel="stylesheet" href="{{ url_for('static', filename= 'css/main.css') }}"> 
+{% endblock %}
+
+{% block content %}
+<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+	<a class="navbar-brand" href="#">At Your Service</a>
+	<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+		<span class="navbar-toggler-icon"></span>
+	</button>
+
+	<div class="collapse navbar-collapse">
+		<ul class="navbar-nav mr-auto">
+			<li class="nav-item">
+					<a class="nav-link" href="/dashboard">Dashboard</a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link" href="/explore-services">Explore Services</a>
+			</li>
+			<li class="nav-item">
+					<a class="nav-link" href="/job-ads">Job Ads</a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link" href="/my-requests">My Requests</a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link" href="/my-services">My Services</a>
+			</li>
+			<li class="nav-item">
+					<a class="nav-link" href="/notifications">Notifications</a>
+			</li>
+			<li class="nav-item">
+					<a class="nav-link" href="/messages">Messages</a>
+			</li>
+			<li class="nav-item dropdown">
+				<a class="nav-link dropdown-toggle" data-toggle="dropdown">User</a>
+				<div class="dropdown-menu">
+					<a class="dropdown-item" href="/profile">View Profile</a>
+					<a class="dropdown-item" data-toggle="modal" data-target="#sign-out">Sign Out</a>
+				</div>
+			</li>
+		</ul>
+		<form action="/sign-out">
+		  <a type="submit" class="btn btn-primary" style="color:white" data-toggle="modal" data-target="#sign-out">Sign Out</a>
+		</form>
+	</div>
+</nav>
+
+<div class="modal fade" id="sign-out">
+	<div class="modal-dialog modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="#sign-out">Sign Out</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<p>Are you sure you want to sign out?</p>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+				<form action="/sign-out">
+					<input type="submit" value="Sign Out" class="btn btn-danger">
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="container py-5">
+	<div class="card px-5 py-5">
+		<div>
+			<p class="font-weight-bold h1 text-center">At Your Service!</p>
+
+			<div class="container">
+				<p class="py-4 h1">My Profile</p>
+				<div class="row align-items-center border border-secondary">
+					<div class="col-2">
+						<div class="row justify-content-center py-3">
+							<img src="https://media.tarkett-image.com/large/TH_24567080_24594080_24596080_24601080_24563080_24565080_24588080_001.jpg" class="rounded-circle" height="100" width="100" alt="Profile Picture">
+						</div>
+					</div>
+					<div class="col-4">
+						<p class="lead">{{ user_info["user_first_name"] }} {{ user_info["user_middle_name"] }} {{ user_info["user_last_name"] }}</p>
+						<i style="color: #5a5a5a;">{{ user_info["user_id"] }}</i>
+					</div>
+					<div class="col-4">
+						<p>
+							{% for star in range(5) %}
+								{% if star < (user_info["user_rating"] | int) %}
+									<span class="fa fa-star" style="color:#EFFD5F"></span>
+								{% else %}
+									<span class="fa fa-star" style="color:grey"></span>
+								{% endif %}
+							{% endfor %}
+							({{ user_info["user_rating"] }})
+							</p>
+							<p>
+							{% if user_info["user_level"] == 1 %}
+								<span class="badge badge-info tags">Basic</span>
+							{% elif user_info["user_level"] == 2 %}
+								<span class="badge badge-info tags">Semi</span>
+							{% elif user_info["user_level"] == 3 %}
+								<span class="badge badge-info tags">Full</span>
+							{% endif %}
+
+							{% if user_info["user_is_trusted"] %}
+								<span class="badge badge-info tags">Trusted</span>
+							{% endif %}
+							</p>
+					</div>
+				</div>
+				<div class="row align-items-center">
+					<div class="col">
+						<div class="container my-3">
+							<p class="lead font-weight-bold">Profile Description</p>
+							<p>{{ user_info["user_profile_description"] }}</p>
+						</div>						
+					</div>
+					<div class="col">
+						<div class="container my-3">
+							<p class="lead font-weight-bold">Address</p>
+							<p>{{ user_info["user_address_street"] }}, {{ user_info["user_address_barangay"] }}, {{ user_info["user_address_city"] }}, {{ user_info["user_address_province"] }}, {{ user_info["user_address_country"] }}, {{ user_info["user_address_zip_code"] }}</p>
+						</div>						
+					</div>
+				</div>
+				<div class="row align-items-center">
+					<div class="col-2">
+						<div class="container my-3">
+							<p class="lead font-weight-bold">Sex</p>
+							<p>{{ user_info["user_sex"] }}</p>
+						</div>						
+					</div>
+					<div class="col-2">
+						<div class="container my-3">
+							<p class="lead font-weight-bold">Birthdate</p>
+							<p>{{ user_info["user_birthdate"] }}</p>
+						</div>						
+					</div>
+					<div class="col-2">
+						<div class="container my-3">
+							<p class="lead font-weight-bold">Education</p>
+							<p>{{ user_info["user_education"] }}</p>
+						</div>						
+					</div>
+					<div class="col-3">
+						<div class="container my-3">
+							<p class="lead font-weight-bold">E-mail Address</p>
+							<p>{{ user_info["user_email_address"] }}</p>
+						</div>						
+					</div>
+					<div class="col-3">
+						<div class="container my-3">
+							<p class="lead font-weight-bold">Phone Number</p>
+							<p>{{ user_info["user_phone_number"] }}</p>
+						</div>						
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}

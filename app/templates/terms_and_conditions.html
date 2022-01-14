@@ -1,0 +1,105 @@
+    {% extends "main.html" %}
+
+    {% block title %}Terms and Conditions{% endblock %}
+
+    {% block styles %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    {% endblock %}
+
+    {% block content %}
+    <header>
+      <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+        <a class="navbar-brand" href="/">At Your Service</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+      </nav>
+    </header>
+
+    <main role="main">
+      <div class="jumbotron">
+        <div class="container">
+          <h1 class="display-3">Terms and Conditions</h1>
+          <p><b>Last updated: </b>December 25, 2021</p>
+        </div>
+      </div>
+    </main>
+
+    <div class="container pb-5" data-bs-spy="scroll" data-bs-target="#list-example">
+      <div class="row">
+        <div class="col-3">
+          <div id="list-example" class="list-group">
+            <a class="list-group-item list-group-item-action" href="#list-item-1">Introduction</a>
+            <a class="list-group-item list-group-item-action" href="#list-item-2">Conditions of use</a>
+            <a class="list-group-item list-group-item-action" href="#list-item-3">Privacy policy</a>
+            <a class="list-group-item list-group-item-action" href="#list-item-4">Age restriction</a>
+            <a class="list-group-item list-group-item-action" href="#list-item-5">Intellectual property</a>
+            <a class="list-group-item list-group-item-action" href="#list-item-6">User accounts</a>
+            <a class="list-group-item list-group-item-action" href="#list-item-7">Applicable law</a>
+            <a class="list-group-item list-group-item-action" href="#list-item-8">Disputes</a>
+            <a class="list-group-item list-group-item-action" href="#list-item-9">Indemnification</a>
+            <a class="list-group-item list-group-item-action" href="#list-item-10">Limitation on liability</a>
+          </div>
+        </div>
+        
+        <div class="col">
+          <div data-bs-spy="scroll" data-bs-target="#list-example" data-bs-offset="0" class="scrollspy-example" tabindex="0">
+            
+            <span class="anchor" id="list-item-1"></span>
+            <h4>Introduction</h4>
+            <p>Please read these terms and conditions carefully before using our website operated by us.</p>
+            <hr/>
+
+            <span class="anchor" id="list-item-2"></span>
+            <h4>Conditions of use</h4>
+            <p>By using this website, you certify that you have read and reviewed this Agreement and that you agree to comply with its terms. If you do not want to be bound by the terms of this Agreement, you are advised to leave the website accordingly. AYS only grants use and access of this website, its products, and its services to those who have accepted its terms.</p>
+            <hr/>
+            
+            <span class="anchor" id="list-item-3"></span>
+            <h4>Privacy policy</h4>
+            <p>Before you continue using our website, we advise you to read our <a href="/privacy-policy">privacy policy</a> regarding our user data collection. It will help you better understand our practices.</p>
+            <hr/>
+
+            <span class="anchor" id="list-item-4"></span>
+            <h4>Age restriction</h4>
+            <p>You must be at least 18 (eighteen) years of age before you can use this website. By using this website, you warrant that you are at least 18 years of age and you may legally adhere to this Agreement. AYS assumes no responsibility for liabilities related to age misrepresentation.</p>
+            <hr/>
+
+            <span class="anchor" id="list-item-5"></span>
+            <h4>Intellectual property</h4>
+            <p>You agree that all materials, products, and services provided on this website are the property of AYS, its affiliates, directors, officers, employees, agents, suppliers, or licensors including all copyrights, trade secrets, trademarks, patents, and other intellectual property. You also agree that you will not reproduce or redistribute the AYS’s intellectual property in any way, including electronic, digital, or new trademark registrations.</p>
+            <p>You grant AYS a royalty-free and non-exclusive license to display, use, copy, transmit, and broadcast the content you upload and publish. For issues regarding intellectual property claims, you should contact the company in order to come to an agreement.</p>
+            <hr/>
+
+            <span class="anchor" id="list-item-6"></span>
+            <h4>User accounts</h4>
+            <p>As a user of this website, you may be asked to register with us and provide private information. You are responsible for ensuring the accuracy of this information, and you are responsible for maintaining the safety and security of your identifying information. You are also responsible for all activities that occur under your account or password.</p>
+            <p>If you think there are any possible issues regarding the security of your account on the website, inform us immediately so we may address them accordingly.</p>
+            <p>We reserve all rights to terminate accounts, edit or remove content and cancel orders at our sole discretion</p>
+            <hr/>
+
+            <span class="anchor" id="list-item-7"></span>
+            <h4>Applicable law</h4>
+            <p>By visiting this website, you agree that the laws of the Philippines, without regard to principles of conflict laws, will govern these terms and conditions, or any dispute of any sort that might come between AYS and you, or its business partners and associates.</p>
+            <hr/>
+
+            <span class="anchor" id="list-item-8"></span>
+            <h4>Disputes</h4>
+            <p>Any dispute related in any way to your visit to this website or to products you purchase from us shall be arbitrated by state or federal court and you consent to exclusive jurisdiction and venue of such courts.</p>
+            <hr/>
+
+            <span class="anchor" id="list-item-9"></span>
+            <h4>Indemnification</h4>
+            <p>You agree to indemnify AYS and its affiliates and hold AYS harmless against legal claims and demands that may arise from your use or misuse of our services. We reserve the right to select our own legal counsel.</p>
+            <hr/>
+
+            <span class="anchor" id="list-item-10"></span>
+            <h4>Limitation on liability</h4>
+            <p>AYS is not liable for any damages that may occur to you as a result of your misuse of our website.</p>
+            <p>AYS reserves the right to edit, modify, and change this Agreement at any time. We shall let our users know of these changes through electronic mail. This Agreement is an understanding between AYS and the user, and this supersedes and replaces all prior agreements regarding the use of this website.</p>
+            <hr/>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endblock %}

@@ -1,0 +1,128 @@
+    {% extends "main.html" %}
+
+    {% block title %}AYS for Clients{% endblock %}
+
+    {% block styles %}
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    {% endblock %}
+
+    {% block content %}
+    <header>
+      <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+        <a class="navbar-brand" href="/">AYS for Clients</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse">
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+              <a class="nav-link" href="/client/create-account">Post a Request<span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/">Find Services</a>
+            </li>
+          </ul>
+          <div class="form-inline my-2 my-lg-0">
+            <form action="/sign-in">
+              <input type="submit" value="Sign In" class="btn btn-primary">
+            </form>
+          </div>
+        </div>
+      </nav>
+    </header>
+      
+    <main role="main">
+    
+      <div class="jumbotron">
+        <div class="container">
+          <h1 class="display-3">Looking for services?</h1>
+          <p>You know who you're looking for. We'll help you find them.</p>
+          <p><a class="btn btn-primary btn-lg" href="/client/create-account" role="button">Request a service</a></p>
+        </div>
+      </div>
+      
+      <div class="container">
+        <div class="row py-5">
+          <div class="col-md-4">
+            <div class="card" style="height: 18rem;">
+              <div class="card-body">
+                <div class="container md-4">
+                  <h3 class="text-primary"><b>1</b></h3><br>
+                  <h2>Create your free account</h2>
+                  <p>All you need is your email address to create an account and start building your service request.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="card" style="height: 18rem;">
+              <div class="card-body">
+                  <div class="container md-4">
+                    <h3 class="text-primary"><b>2</b></h3><br>
+                    <h2>Build your service request</h2>
+                    <p>Then just add a title, description, and location to your service request, and you're ready to go.</p>
+                  </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="card" style="height: 18rem;">
+              <div class="card-body">
+                <div class="container md-4">
+                  <h3 class="text-primary"><b>3</b></h3><br>
+                  <h2>Post your service request</h2>
+                  <p>After you post your service request, just wait for service providers to deal.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <hr>
+
+        <div class="row align-items-center py-5">
+          <div class="col-md-9">
+            <h2>Save time and effort in seeking services.</h2>
+            <p class="lead">Finding the right service provider is not easy. AYS’s simple and powerful tools let you seek for services faster.</p>
+          </div>
+          <div class="col-md-3 text-center py-5">
+            <i class="fas fa-user-clock fa-6x"></i>
+          </div>
+        </div>
+
+        <hr>
+
+        <div class="row align-items-center py-5">
+          <div class="col-md-9 order-md-2">
+            <h2>Want to fill your requests faster?</h2>
+            <p class="lead">Pick the budget that works for you and pay only for people clicking on your post.</p></div>
+            <div class="col-md-3 order-md-1 text-center py-5">
+              <i class="fas fa-shipping-fast fa-6x"></i>
+            </div>
+        </div>
+
+        <hr>
+
+        <div class="row align-items-center py-5">
+          <div class="col-md-9">
+            <h2>You're in good company.</h2>
+            <p class="lead">Over 10 people use AYS for seeking services. See why these amazing people use us as their platform to provide service.</p>
+          </div>
+          <div class="col-md-3 text-center py-5">
+            <i class="fas fa-building fa-6x"></i>
+          </div>
+        </div>
+
+        <hr>
+      </main>
+      
+      <div class="container text-center py-5 my-3">
+        <h1 class="cover-heading">Get started in minutes!</h1>
+        <p class="lead py-3"><a href="/client/create-account" class="btn btn-primary btn-lg">Start Posting</a></p>
+        <p>AYS Data Worldwide</p>
+        <p><i>Jira, Total Visits, December 2021</i></p>
+      </div>
+    </main>
+    {% endblock %}

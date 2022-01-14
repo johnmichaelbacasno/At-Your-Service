@@ -1,0 +1,46 @@
+{% extends "main.html" %}
+{% block title %}Fill-up{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename= 'css/main.css') }}"> 
+<link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
+{% endblock %}
+
+{% block content %}  
+<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+	<a class="navbar-brand" href="#">At Your Service</a>
+</nav>
+
+<div class="container py-5">
+	<div class="row">
+		<div class="col text-center d-flex justify-content-center">
+			<div class="card px-5 py-5">
+				<div>
+					<p class="h5"> Want a hired help? </p>
+					<p class="font-weight-bold h1"> At Your Service! </p>
+
+					<p class="py-3 h5"> Are you a... </p>
+
+					<form class="btn-lg" action="/client/create-account">
+						<button class="btn-block btn-secondary rounded-pill" type="submit">
+							<div class="container p-3">
+								<i class="fas fa-user-friends fa-4x"></i>
+							</div>
+							<p>Client</p>
+						</button>
+					</form>
+
+					<form class="btn-lg" action="/service-provider/create-account">
+						<button class="btn-block btn-secondary rounded-pill" type="submit">
+							<div class="container p-3">
+								<i class="fas fa-tools fa-4x"></i>
+							</div>
+							<p>Service Provider</p>
+						</button>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}

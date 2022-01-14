@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    {% block head %}
+    <title>{% block title %}{% endblock %}</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    {{ bootstrap.load_css() }}
+    {% block styles %}{% endblock %}
+    
+    {{ bootstrap.load_js() }}
+    {% block scripts %}{% endblock %}
+    {% endblock %}
+  </head>
+  {% block body%}
+  <body>
+    {% block content %}
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-10">
+          <div class="alert alert-success" role="alert">
+            <h4 class="alert-heading">Success!</h4>
+            <hr>
+            <p>This is the base layout for the project.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endblock %}
+    <footer class="container py-5">
+      {% block footer %}
+      <p class="float-right"><a href="#">Back to top</a></p>
+      <p>&copy; 2021-2022 AYS &middot; <a href="/privacy-policy">Privacy</a> &middot; <a href="/terms-and-conditions">Terms</a></p>
+      {% endblock %}
+    </footer>
+  </body>
+  {% endblock %}
+</html>

@@ -1,0 +1,51 @@
+{% extends "main.html" %}
+
+{% from "bootstrap/form.html" import render_form_row, render_field %}
+
+{% block title %}AYS! Account{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename= 'css/main.css') }}"> 
+{% endblock %}
+
+{% block content %}
+<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+	<a class="navbar-brand" href="#">At Your Service</a>
+</nav>
+
+<div class="container">
+	<div class="card px-5 py-5">
+		<div>
+			<p class="h5 text-center">Share your details here!</p>
+			<p class="font-weight-bold h1 text-center">At Your Service!</p>
+
+			<div class="container">
+				<p class="py-5 h1">My Profile</p>
+				<form method="POST" action="/client/fill-up">
+					{{ form.csrf_token() }}
+					{{ render_form_row([form.user_first_name, form.user_middle_name, form.user_last_name], col_map={"user_first_name": "col-md-6", "user_middle_name": "col-md-3",  "user_last_name": "col-md-3"}) }}
+					{{ render_form_row([form.user_birthdate, form.user_sex], col_map={"user_birthdate": "col-md-6", "user_sex": "col-md-6"}) }}
+					{{ render_form_row([form.user_address_street, form.user_address_barangay, form.user_address_city], col_map={"user_address_street": "col-md-4", "user_address_barangay": "col-md-4",  "user_address_city": "col-md-4"}) }}
+					{{ render_form_row([form.user_address_province, form.user_address_country, form.user_zip_code], col_map={"user_address_province": "col-md-5", "user_address_country": "col-md-5",  "user_zip_code": "col-md-2"}) }}
+					{{ render_form_row([form.user_email]) }}
+					{{ render_form_row([form.user_contact_number]) }}
+					{{ render_form_row([form.user_education]) }}
+
+					<div class="row d-flex justify-content-center py-2">
+						<div class="col-6">
+							{{ render_field(form.submit, button_size="block") }}
+						</div>
+					</div>	
+				</form>
+				<div class="row d-flex justify-content-center py-2">
+					<div class="col-6">
+						<form action="/dashboard">
+							<input type="submit" value="Skip" class="btn btn-secondary btn-block">
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}

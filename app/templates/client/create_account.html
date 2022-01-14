@@ -1,0 +1,45 @@
+{% extends "main.html" %}
+
+{% from "bootstrap/form.html" import render_form_row %}
+
+{% block title %}Create Account{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename= 'css/main.css') }}"> 
+<link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
+{% endblock %}
+
+{% block content %}
+<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+	<a class="navbar-brand" href="#">At Your Service</a>
+</nav>
+   
+<div class="container py-5">
+	<div class="row justify-content-center">
+		<div class="col-md-9">
+			<div class="card px-5 py-5">
+				<div>
+					<p class="h5 text-center">Share your details here!</p>
+					<p class="font-weight-bold h1 text-center">At Your Service!</p>
+
+					<p class="py-5 h1 text-center">Create Account for Client</p>
+
+					<div class="container">
+						<div class="row justify-content-center">
+							<div class="col-md-6">
+								<form method="POST" action="/client/create-account">
+									{{ form.csrf_token() }}
+									{{ render_form_row([form.user_id]) }}
+									{{ render_form_row([form.user_password]) }}
+									{{ render_form_row([form.user_confirm_password]) }}
+									{{ render_form_row([form.submit]) }}
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}
