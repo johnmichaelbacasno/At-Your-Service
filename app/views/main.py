@@ -684,3 +684,68 @@ def request_post(request_post_id):
     elif user_is_service_provider(user):
         request_post_info = get_request_post_info(request_post_id)
         return render_template('service_provider/request_post.html', request_post_info=request_post_info)
+
+@main.route('/apply/<request_post_id>')
+def apply(request_post_id):
+    user = session.get('user_id')
+
+    client = get_request_post_user(request_post_id)
+    service_provider = user
+
+    if user is None:
+        return redirect('/sign-in')
+    elif user_is_client(user):
+        return redirect('/service-provider/create-account')
+    elif user_is_service_provider(user):
+        query = """
+                INSERT INTO `ServiceApplication`(
+                    `service_application_status`,
+                    `service_application_request_post`,
+                    `service_application_client`,
+                    `service_application_service_provider
+                    )
+                VALUES(%s, %s, %s, %s)
+                """
+        data = (
+            'Pending',
+            request_post_id,
+            client,
+            service_provider
+            )          
+
+        conn = db.connect()
+        cursor = conn.cursor()
+        cursor.execute(query, data)
+        cursor.close()
+        conn.commit()
+        conn.close()
+        flash('Application added!', 'success')
+        return redirect('/my-status')
+
+@main.route('/confirm_application/<service_application_id>')
+def confirm_application(service_application_id):
+    user = session.get('user_id')
+    client = get_service_application_client(service_application_id)
+
+    if user is None:
+        return redirect('/sign-in')
+    elif user_is_client(user):
+        if user == client:
+            conn = db.connect()
+            cursor = conn.cursor()
+            cursor.execute("""
+                    UPDATE `ServiceApply` 
+                    SET `service_application_status` = 'Ongoing,
+                    WHERE `service_application_id` = %s
+                    """, (service_application_id),)
+            cursor.close()
+            conn.commit()
+            conn.close()
+            flash('Application confirmed!', 'success')
+            return redirect('/my-status')
+        else:
+            flash('Error occured', 'danger')
+            return redirect('/my-status')
+        
+    elif user_is_service_provider(user):
+        return redirect('/cliet/create-account')

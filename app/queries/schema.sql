@@ -94,32 +94,29 @@ CREATE TABLE `ServiceBook`
     `service_book_service_provider` VARCHAR(100) NOT NULL,
     `service_book_client_notes` TEXT NULL,
     `service_book_provider_notes` TEXT NULL,
-    `service_book_start_date` DATE NOT NULL,
+    `service_book_start_date` DATE NULL,
     `service_book_end_date` DATE NULL,
-    `service_book_amount` FLOAT(20, 2) NOT NULL,
-    `service_book_payment_method` VARCHAR(10) NOT NULL, -- "", "On Cash", "GCash", "Bank"
+    `service_book_payment_method` VARCHAR(10) NULL, -- "", "On Cash", "GCash", "Bank"
     
     PRIMARY KEY (`service_book_id`),
     FOREIGN KEY (`service_book_client`) REFERENCES `User` (`user_id`),
     FOREIGN KEY (`service_book_service_provider`) REFERENCES `User` (`user_id`)
 );
 
-CREATE TABLE `ServiceApply`
+CREATE TABLE `ServiceApplication`
 (
-    `service_apply_id` INT NOT NULL AUTO_INCREMENT,
-    `service_apply_status` VARCHAR(10) NOT NULL, -- "Pending", "Ongoing", "Cancelled", "Completed"
-    `service_apply_request_post` INT NULL,
-    `service_apply_client` VARCHAR(100) NOT NULL,
-    `service_apply_service_provider` VARCHAR(100) NOT NULL,
-    `service_apply_client_notes` TEXT NULL,
-    `service_apply_provider_notes` TEXT NULL,
-    `service_apply_start_date` DATE NOT NULL,
-    `service_apply_end_date` DATE NULL,
-    `service_apply_amount` FLOAT(20, 2) NOT NULL,
-    `service_apply_payment_method` VARCHAR(10) NOT NULL, -- "", "On Cash", "GCash", "Bank"
+    `service_application_id` INT NOT NULL AUTO_INCREMENT,
+    `service_application_status` VARCHAR(10) NOT NULL, -- "Pending", "Ongoing", "Cancelled", "Completed"
+    `service_application_request_post` INT NULL,
+    `service_application_client` VARCHAR(100) NOT NULL,
+    `service_application_service_provider` VARCHAR(100) NOT NULL,
+    `service_application_client_notes` TEXT NULL,
+    `service_application_provider_notes` TEXT NULL,
+    `service_application_start_date` DATE NULL,
+    `service_application_end_date` DATE NULL,
+    `service_application_payment_method` VARCHAR(10) NULL, -- "", "On Cash", "GCash", "Bank"
     
-    
-    PRIMARY KEY (`service_apply_id`),
-    FOREIGN KEY (`service_apply_client`) REFERENCES `User` (`user_id`),
-    FOREIGN KEY (`service_apply_service_provider`) REFERENCES `User` (`user_id`)
+    PRIMARY KEY (`service_application_id`),
+    FOREIGN KEY (`service_application_client`) REFERENCES `User` (`user_id`),
+    FOREIGN KEY (`service_application_service_provider`) REFERENCES `User` (`user_id`)
 );

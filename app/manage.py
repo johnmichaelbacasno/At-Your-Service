@@ -412,3 +412,29 @@ def get_request_post_info(request_post_id):
     cursor.close()
     conn.close()
     return request_post_info
+
+def get_request_post_user(request_post_id):
+    conn = db.connect()
+    cursor = conn.cursor(pymysql.cursors.DictCursor)
+    cursor.execute("""
+        SELECT request_post_user
+        FROM `RequestPost`
+        WHERE RequestPost.request_post_id = %s
+        """, (request_post_id), )
+    request_post_user = cursor.fetchone()['request_post_user']
+    cursor.close()
+    conn.close()
+    return request_post_user
+
+def get_service_application_client(service_application_id):
+    conn = db.connect()
+    cursor = conn.cursor(pymysql.cursors.DictCursor)
+    cursor.execute("""
+        SELECT `service_application_client`
+        FROM `ServiceApplication`
+        WHERE ServiceApplication.service_application_id = %s
+        """, (service_application_id), )
+    service_application_client = cursor.fetchone()['service_application_id']
+    cursor.close()
+    conn.close()
+    return service_application_client
