@@ -1,6 +1,6 @@
 from flask import Markup
 from flask_wtf import FlaskForm
-from wtforms import StringField, IntegerField, DateField, SelectField, SubmitField, FloatField
+from wtforms import StringField, IntegerField, DateField, SelectField, SubmitField, FloatField, FileField, RadioField, BooleanField
 from wtforms.validators import ValidationError, DataRequired, Regexp, NumberRange, Optional
 from extensions import db
 from . manage import *
@@ -320,3 +320,100 @@ class ServicePostAddForm(ServicePostInfoForm):
 
 class ServicePostEditForm(ServicePostInfoForm):
     edit = SubmitField(label=('Edit'))
+
+
+class ApplicationForm(FlaskForm):
+
+    applicant_first_name = StringField(
+        label = ("First Name"),
+        validators = [DataRequired()],
+        render_kw={'type': 'text'}
+    )
+
+    applicant_middle_name = StringField(
+        label=("Middle Name"),
+        validators=[DataRequired()],
+        render_kw={'type': 'text'}
+    )
+
+    applicant_last_name = StringField(
+        label=("Last Name"),
+        validators=[DataRequired()],
+        render_kw={'type': 'text'}
+    )
+
+    applicant_email_address = StringField(
+        label=("Email Address"),
+        validators=[DataRequired()],
+        render_kw={'type': 'text'}
+    )
+
+    applicant_contact_number = StringField(
+        label=("Contact Number (Optional)"),
+        validators=[Optional()],
+        render_kw={'type': 'text'}
+    )
+
+    applicant_city = StringField(
+        label=("City (Optional)"),
+        validators=[Optional()],
+        render_kw={'type': 'text'}
+    )
+
+    applicant_resume = FileField(
+        label = ("Resume"),
+        validators = [
+            DataRequired(),
+            Regexp('^[^/\\]\.pdf$', message="Resume must be in pdf format.")
+        ]
+    )
+
+    applicant_cover_letter = FileField(
+        label = ("Cover Letter (Optional)"),
+        validators = [
+            Optional(),
+            Regexp('^[^/\\]\.pdf$', message="Cover letter must be in pdf format.")
+        ]
+    )
+
+    applicant_education = RadioField(
+        label = ('Highest Education Completed'),
+        validators=[DataRequired()],
+        choices=[
+            ('none','None'),
+            ('high_school','High School'),
+            ('associate','Associate'),
+            ('bachelors','Bachelor\'s'),
+            ('masters','Master\'s'),
+            ('doctorate','Doctorate')
+        ]
+    )
+
+    application_experience = FloatField(
+        label=('Experience in the Field'),
+        validators=[
+            DataRequired(),
+            ],
+        render_kw={'type': 'number'}
+    )
+
+    applicant_interview_availability = StringField(
+        label=("Availability for Interview"),
+        validators=[DataRequired()],
+        render_kw={'type': 'text'}
+    )
+
+    applicant_check_agree = RadioField(
+        label = ('Agree for Background Check'),
+        validators=[DataRequired()],
+        choices=[
+            ('yes','Yes'),
+            ('no','No'),
+        ]
+    )
+
+    applicant_terms_agree = BooleanField(
+        label=("Agree to Terms"),
+        validators=[DataRequired()]
+    )
+

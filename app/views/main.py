@@ -702,7 +702,7 @@ def apply(request_post_id):
                     `service_application_status`,
                     `service_application_request_post`,
                     `service_application_client`,
-                    `service_application_service_provider
+                    `service_application_service_provider`
                     )
                 VALUES(%s, %s, %s, %s)
                 """
