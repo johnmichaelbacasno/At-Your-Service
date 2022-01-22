@@ -71,6 +71,7 @@ CREATE TABLE `ServicePost`
 CREATE TABLE `RequestPost`
 (
     `request_post_id` INT NOT NULL AUTO_INCREMENT,
+    `request_post_status` VARCHAR(10) NOT NULL, -- "Open", "Closed"
     `request_post_title` VARCHAR(100) NOT NULL,
     `request_post_description` TEXT NOT NULL,
     `request_post_user` VARCHAR(100) NOT NULL,
@@ -103,20 +104,32 @@ CREATE TABLE `ServiceBook`
     FOREIGN KEY (`service_book_service_provider`) REFERENCES `User` (`user_id`)
 );
 
-CREATE TABLE `ServiceApplication`
+CREATE TABLE `Job`
 (
-    `service_application_id` INT NOT NULL AUTO_INCREMENT,
-    `service_application_status` VARCHAR(10) NOT NULL, -- "Pending", "Ongoing", "Cancelled", "Completed"
-    `service_application_request_post` INT NULL,
-    `service_application_client` VARCHAR(100) NOT NULL,
-    `service_application_service_provider` VARCHAR(100) NOT NULL,
-    `service_application_client_notes` TEXT NULL,
-    `service_application_provider_notes` TEXT NULL,
-    `service_application_start_date` DATE NULL,
-    `service_application_end_date` DATE NULL,
-    `service_application_payment_method` VARCHAR(10) NULL, -- "", "On Cash", "GCash", "Bank"
-    
-    PRIMARY KEY (`service_application_id`),
-    FOREIGN KEY (`service_application_client`) REFERENCES `User` (`user_id`),
-    FOREIGN KEY (`service_application_service_provider`) REFERENCES `User` (`user_id`)
+    `job_id` INT NOT NULL AUTO_INCREMENT,
+
+    `job_application_applicant_first_name` VARCHAR(255) NOT NULL,
+    `job_application_applicant_middle_name` VARCHAR(255) NOT NULL,
+    `job_application_applicant_last_name` VARCHAR(255) NOT NULL,
+    `job_application_applicant_email_address` VARCHAR(255) NOT NULL,
+    `job_application_applicant_contact_number` VARCHAR(255) NOT NULL,
+    `job_application_applicant_current_address` VARCHAR(255) NOT NULL,
+    `job_application_applicant_resume` BLOB NULL,
+    `job_application_applicant_cover_letter` BLOB NULL,
+    `job_application_applicant_education` VARCHAR(15) NOT NULL,
+    `job_application_applicant_years_experience` FLOAT(20, 2) NOT NULL,
+
+    `job_status` VARCHAR(10) NOT NULL, -- "Declined", "Pending", "Active", "Completed"
+    `job_request_post` INT NOT NULL,
+    `job_client` VARCHAR(100) NOT NULL,
+    `job_service_provider` VARCHAR(100) NOT NULL,
+    `job_client_notes` TEXT NULL,
+    `job_service_provider_notes` TEXT NULL,
+    `job_start_date` DATE NULL,
+    `job_end_date` DATE NULL,
+
+    PRIMARY KEY (`job_id`),
+    FOREIGN KEY (`job_request_post`) REFERENCES `RequestPost` (`request_post_id`),
+    FOREIGN KEY (`job_client`) REFERENCES `User` (`user_id`),
+    FOREIGN KEY (`job_service_provider`) REFERENCES `User` (`user_id`)
 );

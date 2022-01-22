@@ -1,0 +1,637 @@
+    {% extends "main.html" %}
+
+    {% from "bootstrap/utils.html" import render_messages %}
+
+    {% block title %}My Status{% endblock %}
+
+    {% block styles %}
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.19.1/dist/bootstrap-table.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    {% endblock %}
+
+    {% block scripts %}
+    <script src="https://unpkg.com/bootstrap-table@1.19.1/dist/bootstrap-table.min.js"></script>
+    <script src="https://unpkg.com/bootstrap-table@1.19.1/dist/extensions/toolbar/bootstrap-table-toolbar.min.js"></script>
+    <script src="https://unpkg.com/bootstrap-table@1.19.1/dist/extensions/custom-view/bootstrap-table-custom-view.js"></script>
+    {% endblock %}
+
+    {% block content %}
+    <script>
+      $(function() {
+        $('#pendingJobs').bootstrapTable({
+          data: JSON.parse('{{ pending_jobs | tojson | safe}}')
+        })
+      })
+
+      function pendingJobsViewFormatter (data) {
+        var template = $('#pendingJobsTemplate').html();
+        var view = '';
+
+        $.each(data, function (i, row) {
+          view += template
+            .replaceAll('%JOB_ID%', row.job_id)
+            .replaceAll('%JOB_APPLICANT_FIRST_NAME%', row.job_applicant_first_name)
+            .replaceAll('%JOB_APPLICANT_MIDDLE_NAME%', row.job_applicant_middle_name)
+            .replaceAll('%JOB_APPLICANT_LAST_NAME%', row.job_applicant_last_name)
+            .replaceAll('%JOB_APPLICANT_EMAIL_ADDRESS%', row.job_applicant_email_address)
+            .replaceAll('%JOB_APPLICANT_CONTACT_NUMBER%', row.job_applicant_contact_number)
+            .replaceAll('%JOB_APPLICANT_CURRENT_ADDRESS%', row.job_applicant_current_address)
+            .replaceAll('%JOB_APPLICANT_EDUCATION%', row.job_applicant_education)
+            .replaceAll('%JOB_APPLICANT_YEARS_EXPERIENCE%', row.job_applicant_years_experience)
+            .replaceAll('%JOB_STATUS%', row.job_status)
+            .replaceAll('%JOB_REQUEST_POST%', row.job_request_post)
+            .replaceAll('%JOB_REQUEST_POST_TITLE%', row.job_request_post_title)
+            .replaceAll('%JOB_CLIENT%', row.job_client)
+            .replaceAll('%JOB_SERVICE_PROVIDER%', row.job_service_provider)
+            .replaceAll('%JOB_CLIENT_NOTES%', row.job_client_notes)
+            .replaceAll('%JOB_SERVICE_PROVIDER_NOTES%', row.job_service_provider_notes)
+            .replaceAll('%JOB_START_DATE%', row.job_start_date)
+            .replaceAll('%JOB_END_DATE%', row.job_end_date);
+        })
+        
+        return `<div class="row mx-0">${view}</div>`;
+      }
+
+      $(function() {
+        $('#activeJobs').bootstrapTable({
+          data: JSON.parse('{{ active_jobs | tojson | safe}}')
+        })
+      })
+
+      function activeJobsViewFormatter (data) {
+        var template = $('#activeJobsTemplate').html();
+        var view = '';
+
+        $.each(data, function (i, row) {
+          view += template
+            .replaceAll('%JOB_ID%', row.job_id)
+            .replaceAll('%JOB_APPLICANT_FIRST_NAME%', row.job_applicant_first_name)
+            .replaceAll('%JOB_APPLICANT_MIDDLE_NAME%', row.job_applicant_middle_name)
+            .replaceAll('%JOB_APPLICANT_LAST_NAME%', row.job_applicant_last_name)
+            .replaceAll('%JOB_APPLICANT_EMAIL_ADDRESS%', row.job_applicant_email_address)
+            .replaceAll('%JOB_APPLICANT_CONTACT_NUMBER%', row.job_applicant_contact_number)
+            .replaceAll('%JOB_APPLICANT_CURRENT_ADDRESS%', row.job_applicant_current_address)
+            .replaceAll('%JOB_APPLICANT_EDUCATION%', row.job_applicant_education)
+            .replaceAll('%JOB_APPLICANT_YEARS_EXPERIENCE%', row.job_applicant_years_experience)
+            .replaceAll('%JOB_STATUS%', row.job_status)
+            .replaceAll('%JOB_REQUEST_POST%', row.job_request_post)
+            .replaceAll('%JOB_REQUEST_POST_TITLE%', row.job_request_post_title)
+            .replaceAll('%JOB_CLIENT%', row.job_client)
+            .replaceAll('%JOB_SERVICE_PROVIDER%', row.job_service_provider)
+            .replaceAll('%JOB_CLIENT_NOTES%', row.job_client_notes)
+            .replaceAll('%JOB_SERVICE_PROVIDER_NOTES%', row.job_service_provider_notes)
+            .replaceAll('%JOB_START_DATE%', row.job_start_date)
+            .replaceAll('%JOB_END_DATE%', row.job_end_date);
+        })
+        
+        return `<div class="row mx-0">${view}</div>`;
+      }
+
+      $(function() {
+        $('#completedJobs').bootstrapTable({
+          data: JSON.parse('{{ completed_jobs | tojson | safe}}')
+        })
+      })
+
+      function completedJobsViewFormatter (data) {
+        var template = $('#completedJobsTemplate').html();
+        var view = '';
+
+        $.each(data, function (i, row) {
+          view += template
+            .replaceAll('%JOB_ID%', row.job_id)
+            .replaceAll('%JOB_APPLICANT_FIRST_NAME%', row.job_applicant_first_name)
+            .replaceAll('%JOB_APPLICANT_MIDDLE_NAME%', row.job_applicant_middle_name)
+            .replaceAll('%JOB_APPLICANT_LAST_NAME%', row.job_applicant_last_name)
+            .replaceAll('%JOB_APPLICANT_EMAIL_ADDRESS%', row.job_applicant_email_address)
+            .replaceAll('%JOB_APPLICANT_CONTACT_NUMBER%', row.job_applicant_contact_number)
+            .replaceAll('%JOB_APPLICANT_CURRENT_ADDRESS%', row.job_applicant_current_address)
+            .replaceAll('%JOB_APPLICANT_EDUCATION%', row.job_applicant_education)
+            .replaceAll('%JOB_APPLICANT_YEARS_EXPERIENCE%', row.job_applicant_years_experience)
+            .replaceAll('%JOB_STATUS%', row.job_status)
+            .replaceAll('%JOB_REQUEST_POST%', row.job_request_post)
+            .replaceAll('%JOB_REQUEST_POST_TITLE%', row.job_request_post_title)
+            .replaceAll('%JOB_CLIENT%', row.job_client)
+            .replaceAll('%JOB_SERVICE_PROVIDER%', row.job_service_provider)
+            .replaceAll('%JOB_CLIENT_NOTES%', row.job_client_notes)
+            .replaceAll('%JOB_SERVICE_PROVIDER_NOTES%', row.job_service_provider_notes)
+            .replaceAll('%JOB_START_DATE%', row.job_start_date)
+            .replaceAll('%JOB_END_DATE%', row.job_end_date);
+        })
+        
+        return `<div class="row mx-0">${view}</div>`;
+      }
+
+      $(function() {
+        $('#declinedJobs').bootstrapTable({
+          data: JSON.parse('{{ declined_jobs | tojson | safe}}')
+        })
+      })
+
+      function declinedJobsViewFormatter (data) {
+        var template = $('#declinedJobsTemplate').html();
+        var view = '';
+
+        $.each(data, function (i, row) {
+          view += template
+            .replaceAll('%JOB_ID%', row.job_id)
+            .replaceAll('%JOB_APPLICANT_FIRST_NAME%', row.job_applicant_first_name)
+            .replaceAll('%JOB_APPLICANT_MIDDLE_NAME%', row.job_applicant_middle_name)
+            .replaceAll('%JOB_APPLICANT_LAST_NAME%', row.job_applicant_last_name)
+            .replaceAll('%JOB_APPLICANT_EMAIL_ADDRESS%', row.job_applicant_email_address)
+            .replaceAll('%JOB_APPLICANT_CONTACT_NUMBER%', row.job_applicant_contact_number)
+            .replaceAll('%JOB_APPLICANT_CURRENT_ADDRESS%', row.job_applicant_current_address)
+            .replaceAll('%JOB_APPLICANT_EDUCATION%', row.job_applicant_education)
+            .replaceAll('%JOB_APPLICANT_YEARS_EXPERIENCE%', row.job_applicant_years_experience)
+            .replaceAll('%JOB_STATUS%', row.job_status)
+            .replaceAll('%JOB_REQUEST_POST%', row.job_request_post)
+            .replaceAll('%JOB_REQUEST_POST_TITLE%', row.job_request_post_title)
+            .replaceAll('%JOB_CLIENT%', row.job_client)
+            .replaceAll('%JOB_SERVICE_PROVIDER%', row.job_service_provider)
+            .replaceAll('%JOB_CLIENT_NOTES%', row.job_client_notes)
+            .replaceAll('%JOB_SERVICE_PROVIDER_NOTES%', row.job_service_provider_notes)
+            .replaceAll('%JOB_START_DATE%', row.job_start_date)
+            .replaceAll('%JOB_END_DATE%', row.job_end_date);
+        })
+        
+        return `<div class="row mx-0">${view}</div>`;
+      }
+    </script>
+
+    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+      <a class="navbar-brand" href="#">At Your Service</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item">
+              <a class="nav-link" href="/dashboard">Dashboard</span></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/explore-services">Explore Services</a>
+          </li>
+          <li class="nav-item">
+              <a class="nav-link" href="/job-ads">Job Ads</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/my-requests">My Requests</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/my-services">My Services</a>
+          </li>
+          <li class="nav-item active">
+            <a class="nav-link" href="/my-status">My Status <span class="sr-only">(current)</span></a>
+          </li>
+          <li class="nav-item">
+              <a class="nav-link" href="/notifications">Notifications</a>
+          </li>
+          <li class="nav-item">
+              <a class="nav-link" href="/messages">Messages</a>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" data-toggle="dropdown">User</a>
+            <div class="dropdown-menu">
+              <a class="dropdown-item" href="/profile">View Profile</a>
+              <a class="dropdown-item" data-toggle="modal" data-target="#sign-out">Sign Out</a>
+            </div>
+          </li>
+        </ul>
+        <form action="/sign-out">
+          <a type="submit" class="btn btn-primary" style="color:white" data-toggle="modal" data-target="#sign-out">Sign Out</a>
+        </form>
+      </div>
+    </nav>
+    
+    <div class="modal fade" id="sign-out">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="#sign-out">Sign Out</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <p>Are you sure you want to sign out?</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+            <form action="/sign-out">
+              <input type="submit" value="Sign Out" class="btn btn-danger">
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="nav-scroller bg-white shadow-sm mt-2">
+      <nav class="nav nav-underline">
+        <a class="nav-link active" href="/my-status/hiring" style="color: grey"><b>Hiring Applicants</b></a>
+        <a class="nav-link" href="/my-status/applying" style="color: grey">Applying Jobs</a>
+      </nav>
+    </div>
+
+    <div>{{ render_messages() }}</div>
+
+    <div class="container mt-5">
+      <!-- Pending Jobs Table -->
+
+      <div class="container pb-5">
+        <p class="lead">Pending Jobs</p>
+        <table
+          id="pendingJobs"
+          data-search="true"
+          data-show-search-button="true"
+          data-show-search-clear-button="true"
+          data-advanced-search="false"
+          data-strict-search="true"
+          data-id-table="advancedTable"
+          data-show-refresh="false"
+          data-pagination="true"
+          data-page-size="4"
+          data-pagination-h-align="left"
+          data-pagination-detail-h-align="right"
+          data-show-custom-view="true"
+          data-show-custom-view-button="false"
+          data-custom-view="pendingJobsViewFormatter">
+          <thead>
+            <tr>
+              <th data-field="job_id" data-searchable="true">Job ID</th>
+              <th data-field="job_application_applicant_first_name" data-searchable="true">Job Applicant First Name</th>
+              <th data-field="job_application_applicant_middle_name" data-searchable="true">Job Applicant Middle Name</th>
+              <th data-field="job_application_applicant_last_name" data-searchable="true">Job Applicant Last Name</th>
+              <th data-field="job_application_applicant_email_address" data-searchable="true">Job Applicant Email Address</th>
+              <th data-field="job_application_applicant_contact_number" data-searchable="true">Job Applicant Contact Number</th>
+              <th data-field="job_application_applicant_current_address" data-searchable="true">Job Applicant Current Address</th>
+              <th data-field="job_application_applicant_education" data-searchable="true">Job Applicant Education</th>
+              <th data-field="job_application_applicant_years_experience" data-searchable="true">Job Applicant Years Experience</th>
+              <th data-field="job_status" data-searchable="true">Job Status</th>
+              <th data-field="job_request_post" data-searchable="true">Job Request Post</th>
+              <th data-field="job_request_post_title" data-searchable="true">Job Request Post Title</th>
+              <th data-field="job_client" data-searchable="true">Job Client</th>
+              <th data-field="job_service_provider" data-searchable="true">Job Service Provider</th>
+              <th data-field="job_client_notes" data-searchable="true">Job Client Notes</th>
+              <th data-field="job_service_provider_notes" data-searchable="true">Job Service Provider Notes</th>
+              <th data-field="job_start_date" data-searchable="true">Job Start Date</th>
+              <th data-field="job_end_date" data-searchable="true">Job End Date</th>
+            </tr>
+        </thead>
+        </table>
+
+        <template id="pendingJobsTemplate">
+          <!-- Card -->
+          <div class="col-12 mt-3">
+            <div class="card">
+              <div class="card-body">
+                <div class="row text-center">
+                  <div class="col-1 d-flex justify-content-center">
+                    <i class="fas fa-user-clock fa-2x"></i>
+                  </div>
+                  <div class="col-3">
+                    <a href="/users/%JOB_SERVICE_PROVIDER%">%JOB_SERVICE_PROVIDER%</a>
+                  </div>
+                  <div class="col-3">
+                    <a href="/request-post/%JOB_REQUEST_POST%"><span style="display:inline-block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 25ch;">%JOB_REQUEST_POST_TITLE%</span></a>
+                  </div>
+                  <div class="col-5">
+                    <div class="row">
+                      <div class="col">
+                        <a href="/application/%JOB_ID%" type="submit" class="btn btn-secondary btn-block" style="color:white">View</a>
+                      </div>
+                      <div class="col">
+                        <a type="submit" class="btn btn-success btn-block" style="color:white" data-toggle="modal" data-target="#accept-job-application">Accept</a>
+                      </div>
+                      <div class="col">
+                        <a type="submit" class="btn btn-danger btn-block" style="color:white" data-toggle="modal" data-target="#decline-job-application">Decline</a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Modal for Accept -->
+          <div class="modal fade" id="accept-job-application">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="#accept-job-application">Accept Application</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <p>Are you sure you want to accept this application?</p>
+                </div>
+                <div class="modal-footer">
+                  <form action="/accept-job-application/%JOB_ID%">
+                    <input type="submit" value="Accept Application" class="btn btn-success">
+                  </form>
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        
+          <!-- Modal for Decline -->
+          <div class="modal fade" id="decline-job-application">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="#decline-job-application">Decline Application</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <p>Are you sure you want to decline this application?</p>
+                </div>
+                <div class="modal-footer">
+                  <form action="/decline-job-application/%JOB_ID%">
+                    <input type="submit" value="Decline Application" class="btn btn-danger">
+                  </form>
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </template>
+      </div>
+
+      <!-- Active Jobs Table -->
+
+      <div class="container pb-5">
+        <p class="lead">Active Jobs</p>
+        <table
+          id="activeJobs"
+          data-search="true"
+          data-show-search-button="true"
+          data-show-search-clear-button="true"
+          data-advanced-search="false"
+          data-strict-search="true"
+          data-id-table="advancedTable"
+          data-show-refresh="false"
+          data-pagination="true"
+          data-page-size="4"
+          data-pagination-h-align="left"
+          data-pagination-detail-h-align="right"
+          data-show-custom-view="true"
+          data-show-custom-view-button="false"
+          data-custom-view="activeJobsViewFormatter">
+          <thead>
+            <tr>
+              <th data-field="job_id" data-searchable="true">Job ID</th>
+              <th data-field="job_application_applicant_first_name" data-searchable="true">Job Applicant First Name</th>
+              <th data-field="job_application_applicant_middle_name" data-searchable="true">Job Applicant Middle Name</th>
+              <th data-field="job_application_applicant_last_name" data-searchable="true">Job Applicant Last Name</th>
+              <th data-field="job_application_applicant_email_address" data-searchable="true">Job Applicant Email Address</th>
+              <th data-field="job_application_applicant_contact_number" data-searchable="true">Job Applicant Contact Number</th>
+              <th data-field="job_application_applicant_current_address" data-searchable="true">Job Applicant Current Address</th>
+              <th data-field="job_application_applicant_education" data-searchable="true">Job Applicant Education</th>
+              <th data-field="job_application_applicant_years_experience" data-searchable="true">Job Applicant Years Experience</th>
+              <th data-field="job_status" data-searchable="true">Job Status</th>
+              <th data-field="job_request_post" data-searchable="true">Job Request Post</th>
+              <th data-field="job_request_post_title" data-searchable="true">Job Request Post Title</th>
+              <th data-field="job_client" data-searchable="true">Job Client</th>
+              <th data-field="job_service_provider" data-searchable="true">Job Service Provider</th>
+              <th data-field="job_client_notes" data-searchable="true">Job Client Notes</th>
+              <th data-field="job_service_provider_notes" data-searchable="true">Job Service Provider Notes</th>
+              <th data-field="job_start_date" data-searchable="true">Job Start Date</th>
+              <th data-field="job_end_date" data-searchable="true">Job End Date</th>
+            </tr>
+        </thead>
+        </table>
+
+        <template id="activeJobsTemplate">
+          <!-- Card -->
+          <div class="col-12 mt-3">
+            <div class="card">
+              <div class="card-body">
+                <div class="row text-center">
+                  <div class="col-1 d-flex justify-content-center">
+                    <i class="fas fa-user-clock fa-2x"></i>
+                  </div>
+                  <div class="col-3">
+                    <a href="/users/%JOB_SERVICE_PROVIDER%">%JOB_SERVICE_PROVIDER%</a>
+                  </div>
+                  <div class="col-3">
+                    <a href="/request-post/%JOB_REQUEST_POST%"><span style="display:inline-block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 25ch;">%JOB_REQUEST_POST_TITLE%</span></a>
+                  </div>
+                  <div class="col-5">
+                    <div class="row">
+                      <div class="col">
+                        <a href="/application/%JOB_ID%" type="submit" class="btn btn-secondary btn-block" style="color:white">View</a>
+                      </div>
+                      <div class="col">
+                        <a type="submit" class="btn btn-warning btn-block" style="color:white" data-toggle="modal" data-target="#complete-job-application">Complete</a>
+                      </div>
+                      <div class="col">
+                        <a type="submit" class="btn btn-danger btn-block" style="color:white" data-toggle="modal" data-target="#decline-job-application">Decline</a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Modal for Complete -->
+          <div class="modal fade" id="complete-job-application">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="#complete-job-application">Accept Application</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <p>Are you sure you want to complete this application?</p>
+                </div>
+                <div class="modal-footer">
+                  <form action="/complete-job-application/%JOB_ID%">
+                    <input type="submit" value="Complete Application" class="btn btn-warning" style="color:white;">
+                  </form>
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        
+          <!-- Modal for Decline -->
+          <div class="modal fade" id="decline-job-application">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="#decline-job-application">Decline Application</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <p>Are you sure you want to decline this application?</p>
+                </div>
+                <div class="modal-footer">
+                  <form action="/decline-job-application/%JOB_ID%">
+                    <input type="submit" value="Decline Application" class="btn btn-danger">
+                  </form>
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </template>
+      </div>
+
+      <!-- Completed Jobs Table -->
+
+      <div class="container pb-5">
+        <p class="lead">Completed Jobs</p>
+        <table
+          id="completedJobs"
+          data-search="true"
+          data-show-search-button="true"
+          data-show-search-clear-button="true"
+          data-advanced-search="false"
+          data-strict-search="true"
+          data-id-table="advancedTable"
+          data-show-refresh="false"
+          data-pagination="true"
+          data-page-size="4"
+          data-pagination-h-align="left"
+          data-pagination-detail-h-align="right"
+          data-show-custom-view="true"
+          data-show-custom-view-button="false"
+          data-custom-view="completedJobsViewFormatter">
+          <thead>
+            <tr>
+              <th data-field="job_id" data-searchable="true">Job ID</th>
+              <th data-field="job_application_applicant_first_name" data-searchable="true">Job Applicant First Name</th>
+              <th data-field="job_application_applicant_middle_name" data-searchable="true">Job Applicant Middle Name</th>
+              <th data-field="job_application_applicant_last_name" data-searchable="true">Job Applicant Last Name</th>
+              <th data-field="job_application_applicant_email_address" data-searchable="true">Job Applicant Email Address</th>
+              <th data-field="job_application_applicant_contact_number" data-searchable="true">Job Applicant Contact Number</th>
+              <th data-field="job_application_applicant_current_address" data-searchable="true">Job Applicant Current Address</th>
+              <th data-field="job_application_applicant_education" data-searchable="true">Job Applicant Education</th>
+              <th data-field="job_application_applicant_years_experience" data-searchable="true">Job Applicant Years Experience</th>
+              <th data-field="job_status" data-searchable="true">Job Status</th>
+              <th data-field="job_request_post" data-searchable="true">Job Request Post</th>
+              <th data-field="job_request_post_title" data-searchable="true">Job Request Post Title</th>
+              <th data-field="job_client" data-searchable="true">Job Client</th>
+              <th data-field="job_service_provider" data-searchable="true">Job Service Provider</th>
+              <th data-field="job_client_notes" data-searchable="true">Job Client Notes</th>
+              <th data-field="job_service_provider_notes" data-searchable="true">Job Service Provider Notes</th>
+              <th data-field="job_start_date" data-searchable="true">Job Start Date</th>
+              <th data-field="job_end_date" data-searchable="true">Job End Date</th>
+            </tr>
+        </thead>
+        </table>
+
+        <template id="completedJobsTemplate">
+          <!-- Card -->
+          <div class="col-12 mt-3">
+            <div class="card">
+              <div class="card-body">
+                <div class="row text-center">
+                  <div class="col-1 d-flex justify-content-center">
+                    <i class="fas fa-user-clock fa-2x"></i>
+                  </div>
+                  <div class="col-3">
+                    <a href="/users/%JOB_SERVICE_PROVIDER%">%JOB_SERVICE_PROVIDER%</a>
+                  </div>
+                  <div class="col-3">
+                    <a href="/request-post/%JOB_REQUEST_POST%"><span style="display:inline-block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 25ch;">%JOB_REQUEST_POST_TITLE%</span></a>
+                  </div>
+                  <div class="col-5">
+                    <div class="row">
+                      <div class="col-4">
+                        <a href="/application/%JOB_ID%" type="submit" class="btn btn-secondary btn-block" style="color:white">View</a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </template>
+      </div>
+
+      <!-- Declined Jobs Table -->
+
+      <div class="container pb-5">
+        <p class="lead">Declined Jobs</p>
+        <table
+          id="declinedJobs"
+          data-search="true"
+          data-show-search-button="true"
+          data-show-search-clear-button="true"
+          data-advanced-search="false"
+          data-strict-search="true"
+          data-id-table="advancedTable"
+          data-show-refresh="false"
+          data-pagination="true"
+          data-page-size="4"
+          data-pagination-h-align="left"
+          data-pagination-detail-h-align="right"
+          data-show-custom-view="true"
+          data-show-custom-view-button="false"
+          data-custom-view="declinedJobsViewFormatter">
+          <thead>
+            <tr>
+              <th data-field="job_id" data-searchable="true">Job ID</th>
+              <th data-field="job_application_applicant_first_name" data-searchable="true">Job Applicant First Name</th>
+              <th data-field="job_application_applicant_middle_name" data-searchable="true">Job Applicant Middle Name</th>
+              <th data-field="job_application_applicant_last_name" data-searchable="true">Job Applicant Last Name</th>
+              <th data-field="job_application_applicant_email_address" data-searchable="true">Job Applicant Email Address</th>
+              <th data-field="job_application_applicant_contact_number" data-searchable="true">Job Applicant Contact Number</th>
+              <th data-field="job_application_applicant_current_address" data-searchable="true">Job Applicant Current Address</th>
+              <th data-field="job_application_applicant_education" data-searchable="true">Job Applicant Education</th>
+              <th data-field="job_application_applicant_years_experience" data-searchable="true">Job Applicant Years Experience</th>
+              <th data-field="job_status" data-searchable="true">Job Status</th>
+              <th data-field="job_request_post" data-searchable="true">Job Request Post</th>
+              <th data-field="job_request_post_title" data-searchable="true">Job Request Post Title</th>
+              <th data-field="job_client" data-searchable="true">Job Client</th>
+              <th data-field="job_service_provider" data-searchable="true">Job Service Provider</th>
+              <th data-field="job_client_notes" data-searchable="true">Job Client Notes</th>
+              <th data-field="job_service_provider_notes" data-searchable="true">Job Service Provider Notes</th>
+              <th data-field="job_start_date" data-searchable="true">Job Start Date</th>
+              <th data-field="job_end_date" data-searchable="true">Job End Date</th>
+            </tr>
+        </thead>
+        </table>
+
+        <template id="declinedJobsTemplate">
+          <!-- Card -->
+          <div class="col-12 mt-3">
+            <div class="card">
+              <div class="card-body">
+                <div class="row text-center">
+                  <div class="col-1 d-flex justify-content-center">
+                    <i class="fas fa-user-clock fa-2x"></i>
+                  </div>
+                  <div class="col-3">
+                    <a href="/users/%JOB_SERVICE_PROVIDER%">%JOB_SERVICE_PROVIDER%</a>
+                  </div>
+                  <div class="col-3">
+                    <a href="/request-post/%JOB_REQUEST_POST%"><span style="display:inline-block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 25ch;">%JOB_REQUEST_POST_TITLE%</span></a>
+                  </div>
+                  <div class="col-5">
+                    <div class="row">
+                      <div class="col-4">
+                        <a href="/application/%JOB_ID%" type="submit" class="btn btn-secondary btn-block" style="color:white">View</a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </template>
+      </div>
+
+    </div>
+    {% endblock %}

@@ -323,7 +323,6 @@ class ServicePostEditForm(ServicePostInfoForm):
 
 
 class ApplicationForm(FlaskForm):
-
     applicant_first_name = StringField(
         label = ("First Name"),
         validators = [DataRequired()],
@@ -354,26 +353,26 @@ class ApplicationForm(FlaskForm):
         render_kw={'type': 'text'}
     )
 
-    applicant_city = StringField(
-        label=("City (Optional)"),
+    applicant_current_address = StringField(
+        label=("Current Address (Optional)"),
         validators=[Optional()],
         render_kw={'type': 'text'}
-    )
-
-    applicant_resume = FileField(
-        label = ("Resume"),
-        validators = [
-            DataRequired(),
-            Regexp('^[^/\\]\.pdf$', message="Resume must be in pdf format.")
-        ]
     )
 
     applicant_cover_letter = FileField(
         label = ("Cover Letter (Optional)"),
         validators = [
             Optional(),
-            Regexp('^[^/\\]\.pdf$', message="Cover letter must be in pdf format.")
-        ]
+        ],
+        render_kw={'accept': '.pdf'}
+    )
+
+    applicant_resume = FileField(
+        label = ("Resume (Optional)"),
+        validators = [
+            Optional(),
+        ],
+        render_kw={'accept': '.pdf'}
     )
 
     applicant_education = RadioField(
@@ -389,7 +388,7 @@ class ApplicationForm(FlaskForm):
         ]
     )
 
-    application_experience = FloatField(
+    applicant_years_experience = FloatField(
         label=('Experience in the Field'),
         validators=[
             DataRequired(),
@@ -397,12 +396,15 @@ class ApplicationForm(FlaskForm):
         render_kw={'type': 'number'}
     )
 
+    '''
     applicant_interview_availability = StringField(
         label=("Availability for Interview"),
         validators=[DataRequired()],
         render_kw={'type': 'text'}
     )
+    '''
 
+    '''
     applicant_check_agree = RadioField(
         label = ('Agree for Background Check'),
         validators=[DataRequired()],
@@ -411,9 +413,12 @@ class ApplicationForm(FlaskForm):
             ('no','No'),
         ]
     )
+    '''
 
     applicant_terms_agree = BooleanField(
         label=("Agree to Terms"),
         validators=[DataRequired()]
     )
+
+    submit = SubmitField(label=('Submit'))
 

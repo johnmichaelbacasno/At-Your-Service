@@ -1,5 +1,5 @@
 from dotenv import load_dotenv
-from os import getenv
+from os import getenv, path
 
 load_dotenv()
 
@@ -20,6 +20,8 @@ class DevelopmentConfig(Config):
 
     SESSION_PERMANENT = False
     SESSION_TYPE = 'filesystem'
+
+    UPLOAD_PATH = path.join(path.dirname(__file__), 'flask_uploads')
 
 class TestingConfig(Config):
     pass

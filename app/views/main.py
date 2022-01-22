@@ -1,5 +1,7 @@
-from flask import Blueprint, render_template, redirect, url_for, flash, request, session
+from flask import Blueprint, render_template, redirect, url_for, flash, request, session, current_app
+from werkzeug.utils import secure_filename
 from datetime import datetime
+import os
 
 from extensions import db
 
@@ -685,7 +687,7 @@ def request_post(request_post_id):
         request_post_info = get_request_post_info(request_post_id)
         return render_template('service_provider/request_post.html', request_post_info=request_post_info)
 
-@main.route('/apply/<request_post_id>')
+@main.route('/apply/<request_post_id>', methods=['POST', 'GET'])
 def apply(request_post_id):
     user = session.get('user_id')
 
@@ -697,55 +699,199 @@ def apply(request_post_id):
     elif user_is_client(user):
         return redirect('/service-provider/create-account')
     elif user_is_service_provider(user):
-        query = """
-                INSERT INTO `ServiceApplication`(
-                    `service_application_status`,
-                    `service_application_request_post`,
-                    `service_application_client`,
-                    `service_application_service_provider`
-                    )
-                VALUES(%s, %s, %s, %s)
-                """
-        data = (
-            'Pending',
-            request_post_id,
-            client,
-            service_provider
-            )          
-
         conn = db.connect()
-        cursor = conn.cursor()
-        cursor.execute(query, data)
+        cursor = conn.cursor(pymysql.cursors.DictCursor)
+        cursor.execute("""
+            SELECT `user_first_name` AS `applicant_first_name`,
+                   `user_middle_name` AS `applicant_middle_name`,
+                   `user_last_name` AS `applicant_last_name`,
+                   `user_email_address` AS `applicant_email_address`,
+                   `user_phone_number` AS `applicant_contact_number`,
+                   `user_address_city` AS `applicant_current_address`,
+                   `user_education` AS `applicant_education`
+            FROM `User`
+            WHERE `user_id` = %s
+            """, (user,))
+        applicant_info = cursor.fetchone()
         cursor.close()
-        conn.commit()
         conn.close()
-        flash('Application added!', 'success')
-        return redirect('/my-status')
 
-@main.route('/confirm_application/<service_application_id>')
-def confirm_application(service_application_id):
-    user = session.get('user_id')
-    client = get_service_application_client(service_application_id)
+        form = ApplicationForm(data=applicant_info)
+        
+        if form.validate_on_submit():
+            query = """
+                INSERT INTO `Job` (
+                    `job_application_applicant_first_name`,
+                    `job_application_applicant_middle_name`,
+                    `job_application_applicant_last_name`,
+                    `job_application_applicant_email_address`,
+                    `job_application_applicant_contact_number`,
+                    `job_application_applicant_current_address`,
+                    `job_application_applicant_resume`,
+                    `job_application_applicant_cover_letter`,
+                    `job_application_applicant_education`,
+                    `job_application_applicant_years_experience`,
+                    `job_status`,
+                    `job_request_post`,
+                    `job_client`,
+                    `job_service_provider`
+                    )
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                """
 
-    if user is None:
-        return redirect('/sign-in')
-    elif user_is_client(user):
-        if user == client:
+            data = (                    
+                    form.applicant_first_name.data,
+                    form.applicant_middle_name.data,
+                    form.applicant_last_name.data,
+                    form.applicant_email_address.data,
+                    form.applicant_contact_number.data,
+                    form.applicant_current_address.data,
+                    form.applicant_resume.data,
+                    form.applicant_cover_letter.data,
+                    form.applicant_education.data,
+                    form.applicant_years_experience.data,
+                    'Pending',
+                    request_post_id,
+                    client,
+                    service_provider
+                    )
             conn = db.connect()
             cursor = conn.cursor()
-            cursor.execute("""
-                    UPDATE `ServiceApply` 
-                    SET `service_application_status` = 'Ongoing,
-                    WHERE `service_application_id` = %s
-                    """, (service_application_id),)
+            cursor.execute(query, data)
             cursor.close()
             conn.commit()
             conn.close()
-            flash('Application confirmed!', 'success')
+
+            resume = form.applicant_resume.data
+            cover = form.applicant_cover_letter.data
+
+            if resume:
+                resume.save(os.path.join(current_app.config['UPLOAD_PATH'], 'applications', f"resume_{request_post_id}_{service_provider}.pdf"))
+            if cover:
+                cover.save(os.path.join(current_app.config['UPLOAD_PATH'], 'applications', f"cover_{request_post_id}_{service_provider}.pdf"))
+            
+            flash('Application added!', 'success')
             return redirect('/my-status')
         else:
-            flash('Error occured', 'danger')
-            return redirect('/my-status')
-        
+            return render_template('service_provider/apply_job.html', form=form, request_post_id=request_post_id)
+
+@main.route('/application/<job_id>')
+def application(job_id):
+    user = session.get('user_id')
+    if user is None:
+        return redirect('/sign-in')
+    elif user_is_client(user):
+        return redirect('/service-provider/create-account')
     elif user_is_service_provider(user):
-        return redirect('/cliet/create-account')
+        if user == get_job_client(job_id) or user == get_job_service_provider(job_id):
+            return render_template('service_provider/application.html',
+                                   job_info=get_job_info(job_id))
+        else:
+            return redirect("/not-available")
+
+@main.route('/my-status')
+@main.route('/my-status/hiring')
+def my_status_hiring():
+    user = session.get('user_id')
+    if user is None:
+        return redirect('/sign-in')
+    elif user_is_client(user):
+        return render_template('client/my_status_hiring.html',
+                                pending_jobs=all_client_pending_jobs(user))
+    elif user_is_service_provider(user):
+        return render_template('service_provider/my_status_hiring.html',
+                                pending_jobs=all_client_jobs(user, 'Pending'),
+                                active_jobs=all_client_jobs(user, 'Active'),
+                                completed_jobs=all_client_jobs(user, 'Completed'),
+                                declined_jobs=all_client_jobs(user, 'Declined'))
+
+@main.route('/my-status/applying')
+def my_status_applying():
+    user = session.get('user_id')
+    if user is None:
+        return redirect('/sign-in')
+    elif user_is_client(user):
+        return redirect('/service-provider/create-account')
+    elif user_is_service_provider(user):
+        return render_template('service_provider/my_status_applying.html',
+                                pending_jobs=all_service_provider_jobs(user, 'Pending'),
+                                active_jobs=all_service_provider_jobs(user, 'Active'),
+                                completed_jobs=all_service_provider_jobs(user, 'Completed'),
+                                declined_jobs=all_service_provider_jobs(user, 'Declined'))
+
+@main.route('/delete-job-application/<job_id>')
+def delete_job_application(job_id):
+    user = session.get('user_id')
+    if user is None:
+        return redirect('/sign-in')
+    elif user_is_client(user):
+        return redirect('/service-provider/create-account')
+    elif user_is_service_provider(user):
+        if user == get_job_service_provider(job_id):
+            conn = db.connect()
+            cursor = conn.cursor(pymysql.cursors.DictCursor)
+            cursor.execute('DELETE FROM `Job` WHERE `job_id` = %s', (job_id))  
+            conn.commit()
+            cursor.close()
+            conn.close()
+            flash('Your job application is cancelled!', 'success')
+            return redirect("/my-status")
+        else:
+            return redirect("/not-available")
+
+@main.route('/accept-job-application/<job_id>')
+def accept_job_application(job_id):
+    user = session.get('user_id')
+    if user is None:
+        return redirect('/sign-in')
+    else:
+        client = get_job_client(job_id)
+        if user == client:
+            conn = db.connect()
+            cursor = conn.cursor(pymysql.cursors.DictCursor)
+            cursor.execute("UPDATE `Job` SET `job_status` = 'Active' WHERE `job_id` = %s", (job_id))
+            conn.commit()
+            cursor.close()
+            conn.close()
+            flash('The job application is accepted.', 'success')
+            return redirect("/my-status/hiring")
+        else:
+            return redirect("/not-available")
+
+@main.route('/decline-job-application/<job_id>')
+def decline_job_application(job_id):
+    user = session.get('user_id')
+    if user is None:
+        return redirect('/sign-in')
+    else:
+        client = get_job_client(job_id)
+        if user == client:
+            conn = db.connect()
+            cursor = conn.cursor(pymysql.cursors.DictCursor)
+            cursor.execute("UPDATE `Job` SET `job_status` = 'Declined' WHERE `job_id` = %s", (job_id))
+            conn.commit()
+            cursor.close()
+            conn.close()
+            flash('The job application is declined.', 'success')
+            return redirect("/my-status/hiring")
+        else:
+            return redirect("/not-available")
+
+@main.route('/complete-job-application/<job_id>')
+def complete_job_application(job_id):
+    user = session.get('user_id')
+    if user is None:
+        return redirect('/sign-in')
+    else:
+        client = get_job_client(job_id)
+        if user == client:
+            conn = db.connect()
+            cursor = conn.cursor(pymysql.cursors.DictCursor)
+            cursor.execute("UPDATE `Job` SET `job_status` = 'Completed' WHERE `job_id` = %s", (job_id))
+            conn.commit()
+            cursor.close()
+            conn.close()
+            flash('The job application is completed.', 'success')
+            return redirect("/my-status/hiring")
+        else:
+            return redirect("/not-available")

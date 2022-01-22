@@ -438,3 +438,108 @@ def get_service_application_client(service_application_id):
     cursor.close()
     conn.close()
     return service_application_client
+
+def get_job_info(job_id):
+    conn = db.connect()
+    cursor = conn.cursor(pymysql.cursors.DictCursor)
+    cursor.execute("""
+        SELECT *
+        FROM `Job`
+        WHERE `job_id` = %s
+        """, (job_id))
+    job_info = cursor.fetchone()
+    cursor.close()
+    conn.close()
+    return job_info
+
+def get_job_client(job_id):
+    conn = db.connect()
+    cursor = conn.cursor(pymysql.cursors.DictCursor)
+    cursor.execute("""
+        SELECT job_client
+        FROM `Job`
+        WHERE `job_id` = %s
+        """, (job_id))
+    job_client = cursor.fetchone()['job_client']
+    cursor.close()
+    conn.close()
+    return job_client
+
+def get_job_service_provider(job_id):
+    conn = db.connect()
+    cursor = conn.cursor(pymysql.cursors.DictCursor)
+    cursor.execute("""
+        SELECT job_service_provider
+        FROM `Job`
+        WHERE `job_id` = %s
+        """, (job_id))
+    job_service_provider = cursor.fetchone()['job_service_provider']
+    cursor.close()
+    conn.close()
+    return job_service_provider
+
+def all_service_provider_jobs(user, status):
+    conn = db.connect()
+    cursor = conn.cursor(pymysql.cursors.DictCursor)
+    cursor.execute(
+        """
+        SELECT
+            `job_id`,
+            `job_application_applicant_first_name`,
+            `job_application_applicant_middle_name`,
+            `job_application_applicant_last_name`,
+            `job_application_applicant_email_address`,
+            `job_application_applicant_contact_number`,
+            `job_application_applicant_current_address`,
+            `job_application_applicant_education`,
+            `job_application_applicant_years_experience`,
+            `job_status`,
+            `job_request_post`,
+            `job_client`,
+            `job_service_provider`,
+            `job_client_notes`,
+            `job_service_provider_notes`,
+            `job_start_date`,
+            `job_end_date`,
+            RequestPost.request_post_title AS `job_request_post_title`
+        FROM `Job`
+        JOIN `RequestPost` ON job_request_post = RequestPost.request_post_id
+        WHERE `job_service_provider` = %s AND `job_status` = %s
+        """, (user, status))
+    all_service_provider_jobs = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    return all_service_provider_jobs
+
+def all_client_jobs(user, status):
+    conn = db.connect()
+    cursor = conn.cursor(pymysql.cursors.DictCursor)
+    cursor.execute(
+        """
+        SELECT
+            `job_id`,
+            `job_application_applicant_first_name`,
+            `job_application_applicant_middle_name`,
+            `job_application_applicant_last_name`,
+            `job_application_applicant_email_address`,
+            `job_application_applicant_contact_number`,
+            `job_application_applicant_current_address`,
+            `job_application_applicant_education`,
+            `job_application_applicant_years_experience`,
+            `job_status`,
+            `job_request_post`,
+            `job_client`,
+            `job_service_provider`,
+            `job_client_notes`,
+            `job_service_provider_notes`,
+            `job_start_date`,
+            `job_end_date`,
+            RequestPost.request_post_title AS `job_request_post_title`
+        FROM `Job`
+        JOIN `RequestPost` ON job_request_post = RequestPost.request_post_id
+        WHERE `job_client` = %s AND `job_status` = %s
+        """, (user, status))
+    all_client_jobs = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    return all_client_jobs
