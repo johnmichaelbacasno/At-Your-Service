@@ -82,7 +82,8 @@
         <div class="container">
           <h1 class="display-3">Application</h1>
           <p>{{ job_info }}</p>
-      </div>
+          <p><a href="/resume/resume_{{ job_info['job_id'] }}.pdf">Resume</a></p>
+          <p><a href="/cover_letter/cover_{{ job_info['job_id'] }}.pdf">Cover Letter</a></p>
     </main>
 
     <div class="container">

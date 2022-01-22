@@ -1,4 +1,6 @@
-from flask import Blueprint, render_template, redirect, url_for, flash, request, session, current_app
+from distutils.command import upload
+from flask import Blueprint, render_template, redirect, request_finished, url_for, flash, request, session, current_app, send_file
+from graphviz import render
 from werkzeug.utils import secure_filename
 from datetime import datetime
 import os
@@ -699,81 +701,87 @@ def apply(request_post_id):
     elif user_is_client(user):
         return redirect('/service-provider/create-account')
     elif user_is_service_provider(user):
-        conn = db.connect()
-        cursor = conn.cursor(pymysql.cursors.DictCursor)
-        cursor.execute("""
-            SELECT `user_first_name` AS `applicant_first_name`,
-                   `user_middle_name` AS `applicant_middle_name`,
-                   `user_last_name` AS `applicant_last_name`,
-                   `user_email_address` AS `applicant_email_address`,
-                   `user_phone_number` AS `applicant_contact_number`,
-                   `user_address_city` AS `applicant_current_address`,
-                   `user_education` AS `applicant_education`
-            FROM `User`
-            WHERE `user_id` = %s
-            """, (user,))
-        applicant_info = cursor.fetchone()
-        cursor.close()
-        conn.close()
-
-        form = ApplicationForm(data=applicant_info)
-        
-        if form.validate_on_submit():
-            query = """
-                INSERT INTO `Job` (
-                    `job_application_applicant_first_name`,
-                    `job_application_applicant_middle_name`,
-                    `job_application_applicant_last_name`,
-                    `job_application_applicant_email_address`,
-                    `job_application_applicant_contact_number`,
-                    `job_application_applicant_current_address`,
-                    `job_application_applicant_resume`,
-                    `job_application_applicant_cover_letter`,
-                    `job_application_applicant_education`,
-                    `job_application_applicant_years_experience`,
-                    `job_status`,
-                    `job_request_post`,
-                    `job_client`,
-                    `job_service_provider`
-                    )
-                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-                """
-
-            data = (                    
-                    form.applicant_first_name.data,
-                    form.applicant_middle_name.data,
-                    form.applicant_last_name.data,
-                    form.applicant_email_address.data,
-                    form.applicant_contact_number.data,
-                    form.applicant_current_address.data,
-                    form.applicant_resume.data,
-                    form.applicant_cover_letter.data,
-                    form.applicant_education.data,
-                    form.applicant_years_experience.data,
-                    'Pending',
-                    request_post_id,
-                    client,
-                    service_provider
-                    )
+        job = get_job_via_service_provider_and_request_post(service_provider, request_post_id)
+        if job:
+            return redirect(f"/application/{job['job_id']}")
+        else:
             conn = db.connect()
-            cursor = conn.cursor()
-            cursor.execute(query, data)
+            cursor = conn.cursor(pymysql.cursors.DictCursor)
+            cursor.execute("""
+                SELECT `user_first_name` AS `applicant_first_name`,
+                    `user_middle_name` AS `applicant_middle_name`,
+                    `user_last_name` AS `applicant_last_name`,
+                    `user_email_address` AS `applicant_email_address`,
+                    `user_phone_number` AS `applicant_contact_number`,
+                    `user_address_city` AS `applicant_current_address`,
+                    `user_education` AS `applicant_education`
+                FROM `User`
+                WHERE `user_id` = %s
+                """, (user,))
+            applicant_info = cursor.fetchone()
             cursor.close()
-            conn.commit()
             conn.close()
 
-            resume = form.applicant_resume.data
-            cover = form.applicant_cover_letter.data
-
-            if resume:
-                resume.save(os.path.join(current_app.config['UPLOAD_PATH'], 'applications', f"resume_{request_post_id}_{service_provider}.pdf"))
-            if cover:
-                cover.save(os.path.join(current_app.config['UPLOAD_PATH'], 'applications', f"cover_{request_post_id}_{service_provider}.pdf"))
+            form = ApplicationForm(data=applicant_info)
             
-            flash('Application added!', 'success')
-            return redirect('/my-status')
-        else:
-            return render_template('service_provider/apply_job.html', form=form, request_post_id=request_post_id)
+            if form.validate_on_submit():
+                query = """
+                    INSERT INTO `Job` (
+                        `job_application_applicant_first_name`,
+                        `job_application_applicant_middle_name`,
+                        `job_application_applicant_last_name`,
+                        `job_application_applicant_email_address`,
+                        `job_application_applicant_contact_number`,
+                        `job_application_applicant_current_address`,
+                        `job_application_applicant_resume`,
+                        `job_application_applicant_cover_letter`,
+                        `job_application_applicant_education`,
+                        `job_application_applicant_years_experience`,
+                        `job_status`,
+                        `job_request_post`,
+                        `job_client`,
+                        `job_service_provider`
+                        )
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                    """
+
+                data = (                    
+                        form.applicant_first_name.data,
+                        form.applicant_middle_name.data,
+                        form.applicant_last_name.data,
+                        form.applicant_email_address.data,
+                        form.applicant_contact_number.data,
+                        form.applicant_current_address.data,
+                        form.applicant_resume.data,
+                        form.applicant_cover_letter.data,
+                        form.applicant_education.data,
+                        form.applicant_years_experience.data,
+                        'Pending',
+                        request_post_id,
+                        client,
+                        service_provider
+                        )
+                conn = db.connect()
+                cursor = conn.cursor()
+                cursor.execute(query, data)
+                cursor.close()
+                conn.commit()
+                conn.close()
+
+                resume = form.applicant_resume.data
+                cover = form.applicant_cover_letter.data
+
+                job_id = get_job_via_service_provider_and_request_post(service_provider, request_post_id)['job_id']
+
+                if resume:
+                    resume.save(os.path.join(current_app.config['UPLOAD_PATH'], 'applications', f"resume_{job_id}.pdf"))
+                if cover:
+                    cover.save(os.path.join(current_app.config['UPLOAD_PATH'], 'applications', f"cover_{job_id}.pdf"))
+                
+                flash('Application added!', 'success')
+                return redirect('/my-status/applying')
+            else:
+                return render_template('service_provider/apply_job.html', form=form, request_post_id=request_post_id)
 
 @main.route('/application/<job_id>')
 def application(job_id):
@@ -788,6 +796,16 @@ def application(job_id):
                                    job_info=get_job_info(job_id))
         else:
             return redirect("/not-available")
+
+@main.route('/resume/<filename>')
+def resume(filename):
+    upload_path = current_app.config['UPLOAD_PATH']
+    return send_file(f'{upload_path}\\applications\\{filename}', attachment_filename=filename)
+
+@main.route('/cover_letter/<filename>')
+def cover_letter(filename):
+    upload_path = current_app.config['UPLOAD_PATH']
+    return send_file(f'{upload_path}\\applications\\{filename}', attachment_filename=filename)
 
 @main.route('/my-status')
 @main.route('/my-status/hiring')

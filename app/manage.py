@@ -478,6 +478,19 @@ def get_job_service_provider(job_id):
     conn.close()
     return job_service_provider
 
+def get_job_via_service_provider_and_request_post(service_provider, request_post):
+    conn = db.connect()
+    cursor = conn.cursor(pymysql.cursors.DictCursor)
+    cursor.execute("""
+        SELECT `job_id`
+        FROM `Job`
+        WHERE `job_service_provider` = %s AND `job_request_post` = %s
+        """, (service_provider, request_post))
+    job_id = cursor.fetchone()
+    cursor.close()
+    conn.close()
+    return job_id
+
 def all_service_provider_jobs(user, status):
     conn = db.connect()
     cursor = conn.cursor(pymysql.cursors.DictCursor)
