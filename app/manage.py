@@ -543,3 +543,36 @@ def all_client_jobs(user, status):
     cursor.close()
     conn.close()
     return all_client_jobs
+
+def all_request_post_jobs(request_post, status):
+    conn = db.connect()
+    cursor = conn.cursor(pymysql.cursors.DictCursor)
+    cursor.execute(
+        """
+        SELECT
+            `job_id`,
+            `job_application_applicant_first_name`,
+            `job_application_applicant_middle_name`,
+            `job_application_applicant_last_name`,
+            `job_application_applicant_email_address`,
+            `job_application_applicant_contact_number`,
+            `job_application_applicant_current_address`,
+            `job_application_applicant_education`,
+            `job_application_applicant_years_experience`,
+            `job_status`,
+            `job_request_post`,
+            `job_client`,
+            `job_service_provider`,
+            `job_client_notes`,
+            `job_service_provider_notes`,
+            `job_start_date`,
+            `job_end_date`,
+            RequestPost.request_post_title AS `job_request_post_title`
+        FROM `Job`
+        JOIN `RequestPost` ON job_request_post = RequestPost.request_post_id
+        WHERE RequestPost.request_post_id = %s AND `job_status` = %s
+        """, (request_post, status))
+    all_request_post_jobs = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    return all_request_post_jobs

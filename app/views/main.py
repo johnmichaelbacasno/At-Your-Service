@@ -797,7 +797,10 @@ def my_status_hiring():
         return redirect('/sign-in')
     elif user_is_client(user):
         return render_template('client/my_status_hiring.html',
-                                pending_jobs=all_client_pending_jobs(user))
+                                pending_jobs=all_client_jobs(user, 'Pending'),
+                                active_jobs=all_client_jobs(user, 'Active'),
+                                completed_jobs=all_client_jobs(user, 'Completed'),
+                                declined_jobs=all_client_jobs(user, 'Declined'))
     elif user_is_service_provider(user):
         return render_template('service_provider/my_status_hiring.html',
                                 pending_jobs=all_client_jobs(user, 'Pending'),
